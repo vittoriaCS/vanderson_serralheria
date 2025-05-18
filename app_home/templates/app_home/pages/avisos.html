@@ -1,0 +1,36 @@
+{% extends "app_home/pages/home.html" %}
+{% block content %}
+
+<h2>Informações</h2>
+
+<!-- Indicadores Rápidos -->
+<div class="indicadores-rapidos">
+    <div class="card">
+        <strong>EPIs Cadastrados:</strong>
+        <p>{{ total_epis }}</p>
+    </div>
+    <div class="card">
+        <strong>Colaboradores Ativos:</strong>
+        <p>{{ total_colaboradores }}</p>
+    </div>
+    <div class="card">
+        <strong>EPIs a Devolver:</strong>
+        <p>{{ epis_a_devolver }}</p>
+    </div>
+</div>
+
+<h2>Avisos</h2>
+
+<!-- Avisos -->
+<div class="aviso-container">
+    {% for aviso in avisos %}
+    <div class="aviso">
+        <strong>{{ aviso.titulo }}</strong>
+        <p>{{ aviso.mensagem }}</p>
+        <small>{{ aviso.data_criacao }}</small>
+        <span class="aviso-close" onclick="this.parentElement.style.display='none';">×</span>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

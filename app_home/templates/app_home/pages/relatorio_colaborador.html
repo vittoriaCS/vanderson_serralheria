@@ -1,0 +1,54 @@
+{% extends 'app_home/pages/home.html' %}
+{% block content %}
+<h2>Relatório de Empréstimos por Colaborador</h2>
+
+{% if messages %}
+{% for message in messages %}
+<div class="custom-alert alert alert-success alert-dismissible fade show" role="alert">
+    <span class="custom-alert-message">{{ message }}</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- Formulário de busca -->
+<form method="get" action="" class="w3-margin-bottom">
+    <input class="input-busca" type="text" name="busca" placeholder="Buscar colaborador..." value="{{ termo_busca }}">
+    <button class="botao-busca" type="submit">
+        <i class="fa fa-search"></i> Buscar
+    </button>
+</form>
+
+<table class="w3-table-all w3-hoverable">
+    <thead>
+        <tr class="w3-light-grey">
+            <th>Colaborador</th>
+            <th>Equipamento</th>
+            <th>Data de Empréstimo</th>
+            <th>Data Prevista de Devolução</th>
+            <th>Status do Empréstimo</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for registro in registros %}
+        <tr>
+            <td>{{ registro.colaborador }}</td>
+            <td>{{ registro.equipamento }}</td>
+            <td>{{ registro.data_emprestimo }}</td>
+            <td>{{ registro.data_prevista_da_devolucao }}</td>
+            <td>{{ registro.status }}</td>
+            <td>
+                <a href="{% url 'editar_status' registro.id %}" class="botao-edit">
+                    Editar
+                </a>                
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Desculpe, mas não encontramos dados correspondentes à sua busca.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

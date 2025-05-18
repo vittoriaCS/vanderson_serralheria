@@ -1,0 +1,36 @@
+{% extends 'app_home/pages/home.html' %}
+{% block content %}
+<h2>Editar Status do Empréstimo</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <div class="w3-margin-bottom">
+        <label>Colaborador:</label>
+        <input type="text" value="{{ registro.colaborador }}" disabled class="w3-input w3-border">
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Equipamento:</label>
+        <input type="text" value="{{ registro.equipamento }}" disabled class="w3-input w3-border">
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Data de Empréstimo:</label>
+        <input type="text" value="{{ registro.data_emprestimo }}" disabled class="w3-input w3-border">
+    </div>
+
+    <div class="w3-margin-bottom">
+        <label>Data Prevista de Devolução:</label>
+        <input type="text" value="{{ registro.data_prevista_da_devolucao }}" disabled class="w3-input w3-border">
+    </div>
+
+    <div class="w3-margin-bottom">
+        {{ form.status.label_tag }}
+        {{ form.status }}
+    </div>
+
+    <button type="submit" class="botao-busca">Salvar</button><br>
+    <a href="{% url 'relatorio_colaborador' %}" class="botao-can">Cancelar</a>
+</form>
+{% endblock %}

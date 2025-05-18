@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil do Usuário</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="perfil-sidebar-direita">
+        <ul>
+            <li><button class="sidebar-button"><i class="fa fa-refresh"></i> Atualizar Dados</button></li>
+            <li><button class="sidebar-button"><i class="fa fa-cog"></i> Configurações</button></li>
+            <li><a href="/" class="sidebar-button"> <i class="fa fa-home"></i> Voltar ao Home</a></li>
+            <li><button class="sidebar-button"><i class="fa fa-sign-out"></i> Sair</button></li>
+        </ul>
+    </div>
+
+    <div class="perfil-content-wrapper">
+        <h1>Perfil do Usuário</h1>
+        <div class="perfil-info">
+            <img class="perfil-foto" src="https://static.wikia.nocookie.net/chris/images/a/ad/10331502061.jpg/revision/latest?cb=20130104221203&path-prefix=pt-br" alt="Foto de Perfil">
+            <div class="perfil-dados">
+                <p><strong>Nome:</strong> Julius Rock</p>
+                <p><strong>Email:</strong> juliusrock@email.com</p>
+                <p><strong>Telefone:</strong> (11) 99999-9999</p>
+                <p><strong>Endereço:</strong>  714 Decatur Street, Bed-Stuy, Brooklyn, Nova York</p>
+            </div>
+        </div>
+    </div>    
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'app_home/pages/home.html' %}
+{% block content %}
+<h2>Relatório de Ações de EPI</h2>
+
+    <!-- Formulário de busca -->
+    <form method="get" action="" class="w3-margin-bottom">
+        <input class="input-busca" type="text" name="busca" placeholder="Buscar colaborador..." value="{{ termo_busca }}">
+        <button class="botao-busca" type="submit">
+            <i class="fa fa-search"></i> Buscar
+        </button>
+    </form>
+
+<table class="w3-table-all w3-hoverable">
+    <thead>
+        <tr class="w3-light-grey">
+            <th>Equipamento</th>
+            <th>Colaborador</th>
+            <th>Status</th>
+            <th>Condição</th>
+            <th>Data Empréstimo</th>
+            <th>Data Prevista</th>
+            <th>Data Devolução</th>
+            <th>Observação</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for registro in registros %}
+        <tr>
+            <td>{{ registro.equipamento }}</td>
+            <td>{{ registro.colaborador }}</td>
+            <td>{{ registro.get_status_display }}</td>
+            <td>{{ registro.get_condicao_equipamento_display }}</td>
+            <td>{{ registro.data_emprestimo }}</td>
+            <td>{{ registro.data_prevista_da_devolucao }}</td>
+            <td>{{ registro.data_devolucao|default:"" }}</td>
+            <td>{{ registro.observacao|default:"" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">Nenhum registro encontrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

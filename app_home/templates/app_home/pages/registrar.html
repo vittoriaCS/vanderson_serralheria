@@ -1,0 +1,90 @@
+{% extends "app_home/pages/home.html" %}
+
+{% block content %}
+<h2>Registro de EPI</h2>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="custom-alert alert alert-success alert-dismissible fade show" role="alert">
+      <span class="custom-alert-message">{{ message }}</span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+    </div>
+  {% endfor %}
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    
+    {% for error in form.non_field_errors %}
+        <p class="form-error">{{ error }}</p>
+    {% endfor %}
+    
+    <div>
+        {{ form.equipamento.label }}: 
+        {{ form.equipamento }}
+        {% for error in form.equipamento.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+    
+    <div>
+        {{ form.colaborador.label }}: 
+        {{ form.colaborador }}
+        {% for error in form.colaborador.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.status.label }}: 
+        {{ form.status }}
+        {% for error in form.status.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.condicao_equipamento.label }}: 
+        {{ form.condicao_equipamento }}
+        {% for error in form.condicao_equipamento.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <!-- Campos dinâmicos (observação e devolução) -->
+    <div id="div-observacao" style="display:none;">
+        {{ form.observacao.label }}: 
+        {{ form.observacao }}
+        {% for error in form.observacao.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div id="div-devolucao" style="display:none;">
+        {{ form.data_devolucao.label }}: 
+        {{ form.data_devolucao }}
+        {% for error in form.data_devolucao.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.data_emprestimo.label }}: 
+        {{ form.data_emprestimo }}
+        {% for error in form.data_emprestimo.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.data_prevista_da_devolucao.label }}: 
+        {{ form.data_prevista_da_devolucao }}
+        {% for error in form.data_prevista_da_devolucao.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Cadastrar</button>
+</form>
+
+{% endblock %}

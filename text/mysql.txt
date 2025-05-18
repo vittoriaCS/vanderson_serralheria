@@ -1,0 +1,69 @@
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ; 
+
+show tables;
+select*from colaborador;
+-- -----------------------------------------------------
+-- Table `mydb`.`Colaborador`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Colaborador` (
+  `idColaborador`  INT NOT NULL,
+  `nome` VARCHAR(45) NOT NULL,
+  `cpf` VARCHAR(45) NULL,
+  `cargo` VARCHAR(45) NOT NULL,
+  `setor` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idColaborador`),
+  UNIQUE INDEX `cpf_UNIQUE` (`cpf` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Usuario` (
+  `idUsuario` INT NOT NULL,
+  `nome` VARCHAR(45) NOT NULL,
+  `email` VARCHAR(45) NULL,
+  `senha` VARCHAR(45) NOT NULL,
+  `tipo_usuario` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idUsuario`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`EPI`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`EPI` (
+  `idEPI` INT NOT NULL,
+  `nome` VARCHAR(45) NOT NULL,
+  `descrição` TEXT(45) NOT NULL,
+  `validade` DATE NOT NULL,
+  `quantidade_disponivel` INT NOT NULL,
+  `codigo` VARCHAR(54) NOT NULL,
+  PRIMARY KEY (`idEPI`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Emprestimo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Emprestimo` (
+  `idEmprestimo` INT NOT NULL,
+  `data_emprestimo` DATE NOT NULL,
+  `devolução_prevista` DATE NOT NULL,
+  `devolução_real` DATE NOT NULL,
+  `Emprestimocol` VARCHAR(45) NULL,
+  `data_retirada` DATE NOT NULL,
+  `status` TINYINT NOT NULL,
+  `Colaborador_idColaborador` INT NOT NULL,
+  `EPI_idEPI` INT NOT NULL,
+  PRIMARY KEY (`idEmprestimo`),
+  INDEX `fk_Emprestimo_Colaborador_idx` (`Colaborador_idColaborador` ASC) VISIBLE,
+  INDEX `fk_Emprestimo_EPI1_idx` (`EPI_idEPI` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

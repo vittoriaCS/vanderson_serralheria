@@ -1,0 +1,60 @@
+{% extends 'app_home/pages/home.html' %}
+
+{% block content %}
+<div class="w3-container">
+    <h2>Equipamentos Cadastrados</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <span class="custom-alert-message">{{ message }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Formulário de busca -->
+    <form method="get" action="" class="w3-margin-bottom">
+        <input class="input-busca" type="text" name="busca" placeholder="Buscar equipamento" value="{{ termo_busca }}">
+        <button class="botao-busca" type="submit">
+            <i class="fa fa-search"></i> Buscar
+        </button>
+    </form>
+
+    {% if equipamentos %}
+    <table class="w3-table-all w3-hoverable">
+        <thead>
+            <tr class="w3-light-grey">
+                <th>NomeEPI</th>
+                <th>Descrição</th>
+                <th>Validade</th>
+                <th>Quantidade disponivel</th>
+                <th>Codigo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipamentos in equipamentos %}
+            <tr>
+                <td>{{ equipamentos.nomeEPI }}</td>
+                <td>{{ equipamentos.descricao }}</td>
+                <td>{{ equipamentos.validade }}</td>
+                <td>{{ equipamentos.quantidade_disponivel }}</td>
+                <td>{{ equipamentos.codigo }}</td>
+                <td>
+                    <a href="{% url 'editar_epi' equipamentos.id %}" class="botao-edit">
+                      Editar
+                    </a>
+                    <a href="{% url 'excluir_epi' equipamentos.id %}" class="botao-exclui" onclick="return confirm('Tem certeza que deseja excluir {{ equipamentos.nomeEPI }}?')">
+                      Excluir
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhum EPI cadastrado.</p>
+    {% endif %}
+</div>
+{% endblock content %}

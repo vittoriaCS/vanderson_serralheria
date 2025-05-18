@@ -1,0 +1,59 @@
+{% extends 'app_home/pages/home.html' %}
+
+{% block content %}
+<div class="w3-container">
+    <h2>Colaboradores Cadastrados</h2>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="custom-alert alert alert-success alert-dismissible fade show" role="alert">
+        <span class="custom-alert-message">{{ message }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Formulário de busca -->
+    <form method="get" action="" class="w3-margin-bottom">
+        <input class="input-busca" type="text" name="busca" placeholder="Buscar colaborador..."
+            value="{{ termo_busca }}">
+        <button class="botao-busca" type="submit">
+            <i class="fa fa-search"></i> Buscar
+        </button>
+    </form>
+
+    {% if colaboradores %}
+    <table class="w3-table-all w3-hoverable">
+        <thead>
+            <tr class="w3-light-grey">
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Cargo</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for colaborador in colaboradores %}
+            <tr>
+                <td>{{ colaborador.nome }}</td>
+                <td>{{ colaborador.email }}</td>
+                <td>{{ colaborador.cargo }}</td>
+                <td>{{ colaborador.telefone }}</td>
+                <td>
+                    <a href="{% url 'editar_colaborador' colaborador.id %}" class="botao-edit">
+                        Editar
+                    </a>
+                    <a href="{% url 'excluir_colaborador' colaborador.id %}" class="botao-exclui" onclick="return confirm('Tem certeza que deseja excluir {{ colaborador.nome }}?')">
+                        Excluir
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Nenhum colaborador encontrado.</p>
+    {% endif %}
+</div>
+{% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'app_home/pages/home.html' %}
+{% load static %}
+
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Quantidade de EPI</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <h2>Quantidade de EPI por Status</h2>
+
+    <table class="w3-table-all w3-hoverable">
+        <thead>
+            <tr>
+                <th>Nome do EPI</th>
+                <th>Quantidade Disponível</th>
+                <th>Emprestado</th>
+                <th>Em Uso</th>
+                <th>Fornecido</th>
+                <th>Devolvido</th>
+                <th>Danificado</th>
+                <th>Perdido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for epi in epi_data %}
+            <tr>
+                <td>{{ epi.nomeEPI }}</td>
+                <td>{{ epi.quantidade_disponivel }}</td>
+                <td>{{ epi.status_counts.emprestado|default:"0" }}</td>
+                <td>{{ epi.status_counts.em_uso|default:"0" }}</td>
+                <td>{{ epi.status_counts.fornecido|default:"0" }}</td>
+                <td>{{ epi.status_counts.devolvido|default:"0" }}</td>
+                <td>{{ epi.status_counts.danificado|default:"0" }}</td>
+                <td>{{ epi.status_counts.perdido|default:"0" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="{% static 'script/script.js' %}"></script>
+</body>
+
+{% endblock %}

@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vanderson Serralheria</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+</head>
+
+<body>
+
+    <header>
+        <div class="navbar">
+            <div class="navbar-left">
+                <li class="w3-xlarge"><a href="{% url 'home' %}"><i class="fa fa-home"></i>Home</a></li>
+            </div>
+        </div>
+        <div class="sidebar">
+            <button class="accordion">Equipamentos</button>
+            <div class="panel">
+                <a href="/cadastrar_epi">Cadastrar equipamentos</a>
+                <a href="/listar_epi">Editar equipamentos</a>
+                <a href="/visualizar_quantidade_epi">Visualizar Quantidade de EPIs</a>
+            </div>
+
+            <button class="accordion">Controle EPI</button>
+            <div class="panel">
+                <a href="/registrar">Registrar ação</a>
+                <a href="/listar_registro_relatorio">Relatórios gerais</a>
+            </div>
+
+            <button class="accordion">Colaborador</button>
+            <div class="panel">
+                <a href="/cadastrar_colaborador">Cadastrar colaborador</a>
+                <a href="/relatorio_colaborador">Relatórios de emprestimos</a>
+                <a href="/listar_colaboradores">Editar colaboradores</a>
+            </div>
+
+            <button class="accordion">Informações</button>
+            <div class="panel">
+                <a href="/avisos">Emprestimos e avisos</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <main class="main-content">
+            {% block content %}
+            <section class="boas-vindas">
+                <h3> Gerencie e monitore os equipamentos de proteção.</h3>
+            </section>
+            <section class="descrição">
+                <p>
+                    <br><strong>Importância dos EPIs</strong><br>
+                    <br><strong>Reduz o risco de acidentes:</strong>
+                    Os EPIs ajudam a proteger os trabalhadores contra os riscos específicos da construção civil, como
+                    quedas, impactos, cortes, exposição a produtos químicos e ruídos.<br>
+                    <br><strong>Protege a saúde:</strong>
+                    Os EPIs ajudam a proteger a saúde dos trabalhadores, evitando danos ao sistema respiratório,
+                    auditivo, ocular, cutâneo e outros.<br>
+                    <br><strong>Cumpre a legislação:</strong> A utilização de EPIs é obrigatória por lei e garante que
+                    as
+                    empresas estejam cumprindo as normas de
+                    segurança e saúde no trabalho.
+                </p>
+                <img src="https://i.pinimg.com/736x/c1/4e/8f/c14e8f333af13f46b43441a602f9ce7f.jpg" alt="Imagem de EPIs">
+            </section>
+
+            <div class="epi-grid">
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/763/763396.png" alt="capacete" width="50">
+                        <h3>Capacete de Segurança</h3>
+                        <p>Protege a cabeça contra impactos e quedas de objetos. Fundamental em obras de construção e
+                            outras atividades com risco de lesões na cabeça.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/2832/2832115.png" alt="Luva" width="50">
+                        <h3>Luva de Segurança</h3>
+                        <p>Essenciais para a proteção das mãos contra cortes, perfurações e riscos químicos. Usadas para
+                            o manuseio de ferramentas e materiais de construção.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/2483/2483724.png" alt="Bota" width="50">
+                        <h3>Bota de Segurança</h3>
+                        <p>Protetores dos pés contra quedas de objetos pesados, perfurações e impactos. Essenciais para
+                            a segurança nas obras de construção e indústrias.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/5501/5501343.png" alt="oculos" width="50">
+                        <h3>Óculos de Segurança</h3>
+                        <p>Protege os olhos contra impactos, poeira e radiação. Fundamental para atividades de corte,
+                            lixamento e manipulação de produtos químicos.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/281/281337.png" alt="protetor" width="50">
+                        <h3>Protetor Auricular</h3>
+                        <p>Protege os ouvidos contra ruídos elevados, prevenindo danos auditivos. Indispensável em
+                            ambientes de trabalho com alta exposição a barulho.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/4259/4259398.png" alt="cinto" width="50">
+                        <h3>Cinto de Segurança</h3>
+                        <p>Utilizado para evitar quedas em alturas. Essencial em atividades de construção em andaims ou
+                            outros locais elevados.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/9436/9436268.png" alt="mascara" width="50">
+                        <h3>Máscara Respiratória</h3>
+                        <p>Protege as vias respiratórias contra poeira, fumos e vapores químicos. Fundamental para a
+                            saúde do trabalhador em ambientes com partículas no ar.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/776/776688.png" alt="avental" width="50">
+                        <h3>Avental</h3>
+                        <p>Protege o tronco e membros superiores contra produtos químicos, impactos e queimaduras,
+                            garantindo a segurança do trabalhador.</p>
+                    </article>
+                </div>
+                <div class="epi-item">
+                    <article>
+                        <img src="https://cdn-icons-png.flaticon.com/128/2198/2198182.png" alt="colete" width="50">
+                        <h3>Colete</h3>
+                        <p>Aumenta a visibilidade do trabalhador em ambientes com pouca luz ou alta movimentação de
+                            veículos.</p>
+                    </article>
+                </div>
+            </div>
+            {% endblock content %}
+        </main>
+    </div>
+
+
+    {% load static %}
+    <script src="{% static 'script/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+
+</html>
