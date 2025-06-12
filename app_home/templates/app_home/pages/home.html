@@ -19,6 +19,17 @@
             <div class="navbar-left">
                 <li class="w3-xlarge"><a href="{% url 'home' %}"><i class="fa fa-home"></i>Home</a></li>
             </div>
+            <div class="navbar-right" onclick="toggleUserMenu()">
+                <span> Usuário </span>
+                <img class="img"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjzARZ7uOKKV72Vi1bfjAeixFsVBGgynBmvA&s"
+                    width="30">
+            </div>
+            <div id="user-dropdown" class="dropdown-content">
+                <a href="/perfil"><i class="fa fa-user"></i> Perfil</a>
+                <a href="#"><i class="fa fa-cog"></i> Configurações</a>
+                <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Sair</a>
+            </div>
         </div>
         <div class="sidebar">
             <button class="accordion">Equipamentos</button>

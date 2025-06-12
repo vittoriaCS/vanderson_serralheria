@@ -128,3 +128,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Defina o diretório estático onde os arquivos serão coletados
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
+LOGIN_URL = '/'
+
+LOGIN_REDIRECT_URL = '/home/'

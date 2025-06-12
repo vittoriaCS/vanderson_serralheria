@@ -9,6 +9,8 @@ from .models import Registrar
 from .models import Aviso
 from datetime import date, timedelta
 from django.utils.timezone import now
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 
 def home(request):
     return render(request, 'app_home/pages/home.html')
@@ -258,3 +260,10 @@ def avisos(request):
     }
 
     return render(request, 'app_home/pages/avisos.html', context)
+
+@login_required
+def home(request):
+    return render(request, 'app_home/pages/home.html')
+
+def home_view(request):
+    return render(request, 'app_home/pages/home.html')
