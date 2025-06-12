@@ -1,0 +1,32 @@
+{% load  static %}
+<!DOCTYPE html>
+<htmail>
+
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    </head>
+    
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        {% if form.errors %}
+        <o class="erro">Usuário ou Senha inválidos.</p>
+        {% endif %}
+        <form method="post">
+            {% csr_token %}
+            <p>
+                <label for="id_username">Usuário:</label>
+                <input type="text" name="username" id="username">
+            </p>
+            <p>
+                <label for="id_password">Senha:</label>
+                <input type="password" name="password" id="id_password">
+            </p>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+
+</html>
+            
