@@ -24,5 +24,6 @@ urlpatterns = [
     path('visualizar_quantidade_epi/', views.visualizar_quantidade_epi, name= 'visualizar_quantidade_epi'),
     path('avisos/', views.avisos, name= 'avisos'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login.html'), name='logout'),
+    path('teste/erro-400', views.teste_erro_400, name= 'teste_erro_400')
 ]
 

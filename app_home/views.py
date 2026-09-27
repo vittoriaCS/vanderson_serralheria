@@ -11,6 +11,7 @@ from datetime import date, timedelta
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.http import JsonResponse
 
 def home(request):
     return render(request, 'app_home/pages/home.html')
@@ -267,3 +268,11 @@ def home(request):
 
 def home_view(request):
     return render(request, 'app_home/pages/home.html')
+
+def teste_erro_400(request):
+    return JsonResponse({
+        "sucesso" : False,
+        "codigo" : "Dados inválidos",
+        "erro" : "Os dados de login não estão cadastrado",
+        "status" : "400"
+    }, status=400)
