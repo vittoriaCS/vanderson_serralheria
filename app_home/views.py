@@ -12,6 +12,8 @@ from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 def home(request):
     return render(request, 'app_home/pages/home.html')
@@ -276,3 +278,38 @@ def teste_erro_400(request):
         "erro" : "Os dados de login não estão cadastrado",
         "status" : "400"
     }, status=400)
+
+def resposta(sucesso, codigo, mensagem, status, dados=None, erros=None):
+    corpo = {
+        "sucesso": sucesso,
+        "codigo": codigo,
+        "mensagem": mensagem,
+    }
+    if dados is not None:
+        corpo["dados"] = dados
+    if erros is not None:
+        corpo["erros"] = erros
+    return JsonResponse(
+        corpo,
+        status=status,
+        json_dumps_params={"ensure_ascii": False},  # mantém os acentos
+    )
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def teste_erro_400(request):
+    return resposta(
+        False, "DADOS_INVALIDOS", "Os dados enviados são inválidos.", 400,
+        erros={"email": ["Este campo é obrigatório."]},
+    )
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def teste_erro_400(request):
+    return JsonResponse({
+        "sucesso": False,
+        "codigo": "DADOS_INVALIDOS",
+        "mensagem": "Os dados enviados são inválidos.",
+    }, status=400, json_dumps_params={"ensure_ascii": False})

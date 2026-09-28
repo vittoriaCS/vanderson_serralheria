@@ -1,6 +1,8 @@
 from django.urls import path
 from app_home import views
 from django.contrib.auth import views as auth_views
+from django.urls import path
+from . import views
 
 urlpatterns = [
     path('', auth_views.LoginView.as_view(), name='login'), 
@@ -24,6 +26,8 @@ urlpatterns = [
     path('visualizar_quantidade_epi/', views.visualizar_quantidade_epi, name= 'visualizar_quantidade_epi'),
     path('avisos/', views.avisos, name= 'avisos'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login.html'), name='logout'),
-    path('teste/erro-400', views.teste_erro_400, name= 'teste_erro_400')
+    path('teste/erro-400', views.teste_erro_400, name= 'teste_erro_400'),
+    path("teste/400/", views.teste_erro_400),
+    
 ]
 
