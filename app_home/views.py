@@ -119,6 +119,10 @@ def cadastrar_colaborador(request):
             form.save()
             messages.success(request, 'Colaborador cadastrado com sucesso!')
             return redirect(cadastrar_colaborador)
+        return JsonResponse({
+            'dados invalidos': 'dados incorreto ou invalidos',
+            'campos': form.errors.get_json_data() 
+        }, status=400)
     else:
         form = ColaboradorForm()
     return render(request, 'app_home/pages/cadastrar_colaborador.html', {'form' : form})
