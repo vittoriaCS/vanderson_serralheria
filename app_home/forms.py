@@ -11,6 +11,12 @@ class ColaboradorForm(forms.ModelForm):
         model = Colaborador
         fields = ['nome', 'email', 'cargo', 'telefone']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # tira o maxlength só do HTML; o limite continua validado no servidor
+        for campo in ('cargo', 'telefone'):
+            self.fields[campo].widget.attrs.pop('maxlength', None)
+            
 class EPIForm(forms.ModelForm):
     class Meta:
         model = EPI

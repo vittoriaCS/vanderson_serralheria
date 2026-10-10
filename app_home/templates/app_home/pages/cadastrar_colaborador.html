@@ -12,9 +12,29 @@
 {% endfor %}
 {% endif %}
 
+<style>
+  .campo { margin-bottom: 12px; }
+  .campo label { display: block; }
+  .erro { color: #c0392b; font-size: 0.85rem; display: block; margin-top: 4px; }
+</style>
+
 <form method="POST">
   {% csrf_token %}
-  {{ form.as_p }}
+
+  {% for erro in form.non_field_errors %}
+    <span class="erro">{{ erro }}</span>
+  {% endfor %}
+
+  {% for field in form %}
+    <div class="campo">
+      {{ field.label_tag }}
+      {{ field }}
+      {% for erro in field.errors %}
+        <span class="erro">{{ erro }}</span>
+      {% endfor %}
+    </div>
+  {% endfor %}
+
   <button type="submit">Cadastrar</button>
 </form>
 {% endblock %}
