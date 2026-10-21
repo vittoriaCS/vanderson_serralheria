@@ -7,6 +7,7 @@ from .models import Colaborador
 from .models import EPI
 from .models import Registrar
 from .models import Aviso
+from .template_methods import FormularioTemplate, ListagemTemplate
 from datetime import date, timedelta
 from django.utils.timezone import now
 from django.contrib.auth.decorators import login_required
@@ -14,112 +15,18 @@ from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
- 
-def home(request):
-    return render(request, 'app_home/pages/home.html')
- 
-def listar_colaboradores(request): 
-    termo_busca = request.GET.get('busca', '')  # pega o valor do campo de busca da URL
-    if termo_busca:
-        colaboradores = Colaborador.objects.filter(nome__icontains=termo_busca)
-    else:
-        colaboradores = Colaborador.objects.all()
-        
-    return render(request, 'app_home/pages/listar_colaboradores.html', {
-        'colaboradores': colaboradores,
-        'termo_busca': termo_busca,
-    })
- 
-def listar_epi(request):
-    busca = request.GET.get('busca', '')
-    if busca:
-        epi = EPI.objects.filter(nomeEPI__icontains=busca)
-    else:      
-        epi = EPI.objects.all()
-        
-    return render(request, 'app_home/pages/listar_epi.html', {'equipamentos': epi, 'busca': busca})
- 
- 
-def editar_colaborador(request, id):
-    colaborador = get_object_or_404(Colaborador, id=id)
-    if request.method == 'POST':
-        form = ColaboradorForm(request.POST, instance=colaborador)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Colaborador atualizado!')
-            return redirect('listar_colaboradores')
-    else:
-        form = ColaboradorForm(instance=colaborador)    
-    return render(request, 'app_home/pages/editar_colaborador.html', {'form': form})
- 
-def editar_status(request, id):
-    registro = get_object_or_404(Registrar, id=id)
-    epi = registro.equipamento  
- 
-    if request.method == 'POST':
-        status_anterior = registro.status 
-        status_atualizado = request.POST.get('status')
- 
-        registro.status = status_atualizado
-        registro.save()
- 
-        if status_anterior != 'devolvido' and status_atualizado == 'devolvido':
-            epi.quantidade_disponivel += 1
-            epi.save()
- 
-        elif status_anterior == 'devolvido' and status_atualizado in ['emprestado', 'em_uso', 'fornecido', 'danificado', 'perdido']:
-            if epi.quantidade_disponivel > 0:
-                epi.quantidade_disponivel -= 1
-                epi.save()
- 
-        messages.success(request, 'Status atualizado com sucesso!')
- 
-        return redirect('relatorio_colaborador')
-    else:
-        form = RegistrarForm(instance=registro)
- 
-    return render(request, 'app_home/pages/editar_status.html', {
-        'form': form,
-        'registro': registro  
-    })
- 
- 
-def excluir_epi(request, id):
-    epi = get_object_or_404(EPI, id=id)
-    epi.delete()
-    messages.success(request, 'EPI excluído com sucesso!')
-    return redirect('listar_epi')
- 
-def cadastro_epi_sucesso(request):
-    return render(request,'app_home/pages/cadastro_epi_sucesso.html')
- 
-def editar_epi(request, id):
-    epi = get_object_or_404(EPI, id=id)
-    if request.method == 'POST':
-        form = EPIForm(request.POST, instance=epi)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Equipamento atualizado!')
-            return redirect('listar_epi')
-    else:
-        form = EPIForm(instance=epi)
- 
-    return render(request, 'app_home/pages/editar_epi.html', {'form': form})
- 
-def excluir_colaborador(request, id):
-    colaborador = get_object_or_404(Colaborador, id=id)
-    colaborador.delete()
-    messages.success(request, 'Colaborador excluído com sucesso!')
-    return redirect('listar_colaboradores')
- 
-def cadastrar_colaborador(request):
-    if request.method == 'POST':
-        form = ColaboradorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Colaborador cadastrado com sucesso!')
-            return redirect(cadastrar_colaborador)
- 
+
+STATUS_QUE_RETIRAM = ['emprestado', 'em_uso', 'fornecido', 'danificado', 'perdido']
+
+
+# ---------- Formulários (Template Method: FormularioTemplate.processar) ----------
+
+class CadastroColaborador(FormularioTemplate):
+    form_class = ColaboradorForm
+    template_name = 'app_home/pages/cadastrar_colaborador.html'
+    mensagem_sucesso = 'Colaborador cadastrado com sucesso!'
+
+    def tratar_invalido(self, request, form):
         # Formulário inválido: quem pedir JSON (ex.: Postman com o header
         # "Accept: application/json") recebe o response de erro em JSON.
         if 'application/json' in request.headers.get('Accept', ''):
@@ -127,102 +34,184 @@ def cadastrar_colaborador(request):
                 'dados invalidos': 'dados incorreto ou invalidos',
                 'campos': form.errors.get_json_data()
             }, status=400)
- 
+
         # Navegador: devolve a página de cadastro com os erros de cada campo
         # (o template exibe field.errors abaixo de cada input).
-        return render(
-            request,
-            'app_home/pages/cadastrar_colaborador.html',
-            {'form': form},
-            status=400,
-        )
+        return self.renderizar(request, form, status=400)
+
+    def resposta_sucesso(self, request):
+        return redirect('cadastrar_colaborador')
+
+
+class CadastroEPI(FormularioTemplate):
+    form_class = EPIForm
+    template_name = 'app_home/pages/cadastrar_epi.html'
+    mensagem_sucesso = 'EPI cadastrado com sucesso!'
+
+    def resposta_sucesso(self, request):
+        return self.renderizar(request, EPIForm())
+
+
+class RegistroEPI(FormularioTemplate):
+    form_class = RegistrarForm
+    template_name = 'app_home/pages/registrar.html'
+    mensagem_sucesso = 'Registrado com sucesso!'
+
+    def antes_de_salvar(self, request, registro, form):
+        if registro.status in STATUS_QUE_RETIRAM:
+            if registro.equipamento.quantidade_disponivel <= 0:
+                messages.error(request, "Não há mais itens disponíveis para este EPI!")
+                return self.renderizar(request, form)
+
+            registro.equipamento.quantidade_disponivel -= 1
+            registro.equipamento.save()
+        return None
+
+    def tratar_invalido(self, request, form):
+        messages.error(request, "Item não foi cadastrado. Verifique os campos obrigatórios.")
+        return super().tratar_invalido(request, form)
+
+    def resposta_sucesso(self, request):
+        return redirect('registrar')
+
+
+class EdicaoColaborador(FormularioTemplate):
+    model = Colaborador
+    form_class = ColaboradorForm
+    template_name = 'app_home/pages/editar_colaborador.html'
+    mensagem_sucesso = 'Colaborador atualizado!'
+
+    def resposta_sucesso(self, request):
+        return redirect('listar_colaboradores')
+
+
+class EdicaoEPI(FormularioTemplate):
+    model = EPI
+    form_class = EPIForm
+    template_name = 'app_home/pages/editar_epi.html'
+    mensagem_sucesso = 'Equipamento atualizado!'
+
+    def resposta_sucesso(self, request):
+        return redirect('listar_epi')
+
+
+# ---------- Listagens (Template Method: ListagemTemplate.listar) ----------
+
+class ListaColaboradores(ListagemTemplate):
+    template_name = 'app_home/pages/listar_colaboradores.html'
+    nome_contexto = 'colaboradores'
+
+    def consulta_base(self):
+        return Colaborador.objects.all()
+
+    def filtrar(self, queryset, termo):
+        return queryset.filter(nome__icontains=termo)
+
+
+class ListaEPI(ListagemTemplate):
+    template_name = 'app_home/pages/listar_epi.html'
+    nome_contexto = 'equipamentos'
+    nome_busca = 'busca'
+
+    def consulta_base(self):
+        return EPI.objects.all()
+
+    def filtrar(self, queryset, termo):
+        return queryset.filter(nomeEPI__icontains=termo)
+
+
+class ListaRegistros(ListagemTemplate):
+    template_name = 'app_home/pages/listar_registro_relatorio.html'
+    nome_contexto = 'registros'
+
+    def consulta_base(self):
+        return Registrar.objects.all()
+
+    def filtrar(self, queryset, termo):
+        return queryset.filter(colaborador__nome__icontains=termo)
+
+
+class RelatorioColaborador(ListaRegistros):
+    template_name = 'app_home/pages/relatorio_colaborador.html'
+
+    def consulta_base(self):
+        return Registrar.objects.filter(status='emprestado')
+
+
+# Mesmos nomes de antes, então o urls.py não muda
+cadastrar_colaborador = CadastroColaborador().processar
+cadastrar_epi = CadastroEPI().processar
+registrar = RegistroEPI().processar
+editar_colaborador = EdicaoColaborador().processar
+editar_epi = EdicaoEPI().processar
+listar_colaboradores = ListaColaboradores().listar
+listar_epi = ListaEPI().listar
+listar_registro_relatorio = ListaRegistros().listar
+relatorio_colaborador = RelatorioColaborador().listar
+
+
+# ---------- Views com lógica própria ----------
+
+def editar_status(request, id):
+    registro = get_object_or_404(Registrar, id=id)
+    epi = registro.equipamento
+
+    if request.method == 'POST':
+        status_anterior = registro.status
+        status_atualizado = request.POST.get('status')
+
+        registro.status = status_atualizado
+        registro.save()
+
+        if status_anterior != 'devolvido' and status_atualizado == 'devolvido':
+            epi.quantidade_disponivel += 1
+            epi.save()
+
+        elif status_anterior == 'devolvido' and status_atualizado in STATUS_QUE_RETIRAM:
+            if epi.quantidade_disponivel > 0:
+                epi.quantidade_disponivel -= 1
+                epi.save()
+
+        messages.success(request, 'Status atualizado com sucesso!')
+
+        return redirect('relatorio_colaborador')
     else:
-        form = ColaboradorForm()
-    return render(request, 'app_home/pages/cadastrar_colaborador.html', {'form' : form})
- 
+        form = RegistrarForm(instance=registro)
+
+    return render(request, 'app_home/pages/editar_status.html', {
+        'form': form,
+        'registro': registro
+    })
+
+
+def excluir_epi(request, id):
+    epi = get_object_or_404(EPI, id=id)
+    epi.delete()
+    messages.success(request, 'EPI excluído com sucesso!')
+    return redirect('listar_epi')
+
+def cadastro_epi_sucesso(request):
+    return render(request,'app_home/pages/cadastro_epi_sucesso.html')
+
+def excluir_colaborador(request, id):
+    colaborador = get_object_or_404(Colaborador, id=id)
+    colaborador.delete()
+    messages.success(request, 'Colaborador excluído com sucesso!')
+    return redirect('listar_colaboradores')
+
 def sucesso(request):
     return render(request,'app_home/pages/sucesso.html')
- 
-def cadastrar_epi(request):
-    if request.method == 'POST':
-        form = EPIForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'EPI cadastrado com sucesso!')
-            form = EPIForm()  
-    else:
-        form = EPIForm()
-    
-    return render(request, 'app_home/pages/cadastrar_epi.html', {'form': form})
- 
- 
-def registrar(request):
-    if request.method == 'POST':
-        form = RegistrarForm(request.POST)
-        if form.is_valid():
-            registro = form.save(commit=False)  
-            
-            if registro.status in ['emprestado', 'em_uso', 'fornecido', 'danificado', 'perdido']:
-                if registro.equipamento.quantidade_disponivel <= 0:
-                    messages.error(request, "Não há mais itens disponíveis para este EPI!")
-                    return render(request, 'app_home/pages/registrar.html', {'form': form})
- 
-                registro.equipamento.quantidade_disponivel -= 1
-                registro.equipamento.save()
- 
-            registro.save()  
-            messages.success(request, 'Registrado com sucesso!')  
-            return redirect(registrar)       
-        else:        
-            messages.error(request, "Item não foi cadastrado. Verifique os campos obrigatórios.")
-    else:
-        form = RegistrarForm()
- 
-    return render(request, 'app_home/pages/registrar.html', {'form': form})
- 
- 
+
 def registro_sucesso(request):
     return render(request,'app_home/pages/registro_sucesso.html')
- 
-def listar_registro_relatorio(request):
-    termo_busca = request.GET.get('busca', '')
- 
-    if termo_busca:
-        registros = Registrar.objects.filter(
-           colaborador__nome__icontains=termo_busca
-        )
-    else:
-        registros = Registrar.objects.all()
- 
-    return render(request, 'app_home/pages/listar_registro_relatorio.html', {
-        'registros': registros,
-        'termo_busca': termo_busca,
-    })
- 
- 
-def relatorio_colaborador(request):
-    termo_busca = request.GET.get('busca', '')
-    
-    if termo_busca:
-        registros = Registrar.objects.filter(
-            status='emprestado',
-            colaborador__nome__icontains=termo_busca
-        )
-    else:
-        registros = Registrar.objects.filter(status='emprestado')
-        
-    return render(request, 'app_home/pages/relatorio_colaborador.html', {
-        'registros': registros,
-        'termo_busca': termo_busca,
-    })
- 
+
 def perfil(request):
     return render(request, 'app_home/pages/perfil.html')
- 
+
 def visualizar_quantidade_epi(request):
- 
+
     epi_data = EPI.objects.all()
- 
+
     epi_data_serialized = []
     for epi in epi_data:
         status_counts = {
@@ -239,30 +228,30 @@ def visualizar_quantidade_epi(request):
             'descricao': epi.descricao,
             'status_counts': status_counts,
         })
- 
+
     return render(request, 'app_home/pages/visualizar_quantidade_epi.html', {'epi_data': epi_data_serialized})
- 
+
 def avisos(request):
     total_epis = EPI.objects.count()
     total_colaboradores = Colaborador.objects.count()
- 
+
     epis_a_devolver = Registrar.objects.filter(
         status__in=['emprestado', 'em_uso'],
         data_devolucao__isnull=True
     ).count()
- 
+
     avisos = Aviso.objects.all()
- 
+
     hoje = date.today()
     amanha = hoje + timedelta(days=1)
- 
+
     registros_para_avisar = Registrar.objects.filter(
         status__in=['emprestado', 'em_uso'],
         data_prevista_da_devolucao__in=[hoje, amanha]
     )
- 
+
     avisos_automaticos = []
- 
+
     for registro in registros_para_avisar:
         titulo = "Devolução de EPI Pendente"
         mensagem = f"O EPI '{registro.equipamento.nomeEPI}' emprestado para '{registro.colaborador.nome}' deve ser devolvido em {registro.data_prevista_da_devolucao.strftime('%d/%m/%Y')}."
@@ -271,31 +260,23 @@ def avisos(request):
             'mensagem': mensagem,
             'data_criacao': registro.data_prevista_da_devolucao
         })
- 
+
     context = {
         'total_epis': total_epis,
         'total_colaboradores': total_colaboradores,
         'epis_a_devolver': epis_a_devolver,
-        'avisos': list(avisos) + avisos_automaticos, 
+        'avisos': list(avisos) + avisos_automaticos,
     }
- 
+
     return render(request, 'app_home/pages/avisos.html', context)
- 
+
 @login_required
 def home(request):
     return render(request, 'app_home/pages/home.html')
- 
+
 def home_view(request):
     return render(request, 'app_home/pages/home.html')
- 
-def teste_erro_400(request):
-    return JsonResponse({
-        "sucesso" : False,
-        "codigo" : "Dados inválidos",
-        "erro" : "Os dados de login não estão cadastrado",
-        "status" : "400"
-    }, status=400)
- 
+
 def resposta(sucesso, codigo, mensagem, status, dados=None, erros=None):
     corpo = {
         "sucesso": sucesso,
@@ -311,17 +292,8 @@ def resposta(sucesso, codigo, mensagem, status, dados=None, erros=None):
         status=status,
         json_dumps_params={"ensure_ascii": False},  # mantém os acentos
     )
- 
- 
-@csrf_exempt
-@require_http_methods(["POST"])
-def teste_erro_400(request):
-    return resposta(
-        False, "DADOS_INVALIDOS", "Os dados enviados são inválidos.", 400,
-        erros={"email": ["Este campo é obrigatório."]},
-    )
- 
- 
+
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def teste_erro_400(request):
@@ -330,4 +302,3 @@ def teste_erro_400(request):
         "codigo": "DADOS_INVALIDOS",
         "mensagem": "Os dados enviados são inválidos.",
     }, status=400, json_dumps_params={"ensure_ascii": False})
- 
