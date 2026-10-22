@@ -219,19 +219,3 @@ O endpoint `/cadastrar_colaborador/` aceita requisições `POST` com o header `A
 ```
 
 O parecer técnico e a apresentação dos testes estão na pasta superior do projeto (`Parecer Técnico de Teste – Cadastro de Colaborador` e `Apresentacao_Postman_Parecer_Tecnico`).
-
----
-
-## Limitações conhecidas e próximos passos
-
-Por se tratar de um protótipo, alguns pontos ainda precisam ser tratados antes de um uso em produção:
-
-- **Segurança**
-  - mover `SECRET_KEY` para variável de ambiente e desativar `DEBUG`;
-  - exigir login (`@login_required`) em todas as telas, não só na página inicial;
-  - fazer as exclusões apenas via `POST`, com confirmação.
-- **Dependências** — criar um `requirements.txt` com as versões fixadas.
-- **Banco de dados** — migrar do SQLite para MySQL/PostgreSQL (a modelagem inicial está em `text/mysql.txt`).
-- **Localização** — configurar `LANGUAGE_CODE = 'pt-br'` e `TIME_ZONE = 'America/Sao_Paulo'`.
-- **Validações** — impedir cadastro de EPI vencido e alertar sobre EPIs próximos do vencimento.
-- **Testes** — ampliar a cobertura para `editar_status`, `avisos` e autenticação.
